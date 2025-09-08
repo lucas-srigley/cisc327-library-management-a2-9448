@@ -199,3 +199,13 @@ def update_borrow_record_return_date(patron_id: str, book_id: int, return_date: 
     except Exception as e:
         conn.close()
         return False
+
+# reset any data I have added
+def reset_db():
+    conn = get_db_connection()
+    conn.execute("DELETE FROM borrow_records")
+    conn.execute("DELETE FROM books")
+    conn.commit()
+    conn.close()
+    init_database()
+    add_sample_data()

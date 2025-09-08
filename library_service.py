@@ -41,6 +41,10 @@ def add_book_to_catalog(title: str, author: str, isbn: str, total_copies: int) -
     if len(isbn) != 13:
         return False, "ISBN must be exactly 13 digits."
     
+    # check if ISBN is an integer
+    if not isbn.isdigit():
+        return False, "ISBN must be an integer."
+    
     if not isinstance(total_copies, int) or total_copies <= 0:
         return False, "Total copies must be a positive integer."
     
