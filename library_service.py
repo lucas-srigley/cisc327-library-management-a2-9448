@@ -13,7 +13,7 @@ from database import (
 
 def add_book_to_catalog(title: str, author: str, isbn: str, total_copies: int) -> Tuple[bool, str]:
     """
-    Add a new book to the catalog.
+    Add a new book to the catalog. 
     Implements R1: Book Catalog Management
     
     Args:
