@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Tuple
 from database import (
     get_book_by_id, get_book_by_isbn, get_patron_borrow_count,
     insert_book, insert_borrow_record, update_book_availability,
-    update_borrow_record_return_date, get_all_books
+    update_borrow_record_return_date, get_all_books, get_patron_borrowed_books
 )
 
 def add_book_to_catalog(title: str, author: str, isbn: str, total_copies: int) -> Tuple[bool, str]:
@@ -85,9 +85,9 @@ def borrow_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
         return False, "This book is currently not available."
     
     # Check patron's current borrowed books count
-    current_borrowed = get_patron_borrow_count(patron_id)
+    borrowed_books_count = get_patron_borrow_count(patron_id)
     
-    if current_borrowed > 5:
+    if borrowed_books_count > 5:
         return False, "You have reached the maximum borrowing limit of 5 books."
     
     # Create borrow record
@@ -111,7 +111,38 @@ def return_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
     
     TODO: Implement R4 as per requirements
     """
-    return False, "Book return functionality is not yet implemented."
+    if not patron_id or not patron_id.isdigit() or len(patron_id) != 6:
+        return False, "Invalid patron ID. Must be exactly 6 digits."
+    
+    book = get_book_by_id(book_id)
+    if not book:
+        return False, "Book not found."
+    
+    borrowed_books = get_patron_borrowed_books(patron_id)
+    book_borrowed = False
+    for book in borrowed_books:
+        if book["book_id"] == book_id:
+            book_borrowed = True
+            break
+    if not book_borrowed:
+        return False, "Book has not been borrowed by this patron."
+    
+    return_success = update_borrow_record_return_date(patron_id, book_id, datetime.now())
+    if not return_success:
+        return False, "Database error occurred while creating borrow record."
+    
+    availability_success = update_book_availability(book_id, +1)
+    if not availability_success:
+        return False, "Database error occurred while updating book availability."
+    
+    late_fees = calculate_late_fee_for_book(patron_id, book_id)
+    fee_amount = late_fees.get("fee_amount", 0.00)
+    days_overdue = late_fees.get("days_overdue", 0)
+    
+    message = f'Successfully returned "{book["title"]}". '
+    if days_overdue > 0:
+        message += f'Book is overdue by {days_overdue} days, late fee is ${fee_amount:.2f}.'
+    return True, message
 
 def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     """
@@ -119,13 +150,49 @@ def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     
     TODO: Implement R5 as per requirements 
     
-    
     return { // return the calculated values
         'fee_amount': 0.00,
         'days_overdue': 0,
         'status': 'Late fee calculation not implemented'
     }
     """
+    book = get_book_by_id(book_id)
+    if not book:
+        return {
+            "fee_amount": 0.00,
+            "days_overdue": 0,
+            "status": "Book not found." 
+        }
+    
+    borrowed_books = get_patron_borrowed_books(patron_id)
+    book_borrowed = None
+    for book in borrowed_books:
+        if book["book_id"] == book_id:
+            book_borrowed = book
+            break
+    if not book_borrowed:
+        return {
+            "fee_amount": 0.00,
+            "days_overdue": 0,
+            "status": "Book has not been borrowed by this patron." 
+        }
+    due_date = book_borrowed['due_date']
+    days_overdue = (datetime.now() - due_date).days
+    if days_overdue <= 0:
+        return {
+            "fee_amount": 0.00,
+            "days_overdue": 0,
+            "status": "No late fee, book is not overdue." 
+        }
+    
+    first_7_days_fee = min(days_overdue, 7) * 0.5
+    remaining_days_fee = max(days_overdue - 7, 0) * 1
+    fee_amount = min(first_7_days_fee + remaining_days_fee, 15)
+    return {
+        "fee_amount": fee_amount,
+        "days_overdue": days_overdue,
+        "status": f'Book is overdue by {days_overdue} days, late fee is {fee_amount}.'
+    }
 
 def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
     """
@@ -133,6 +200,7 @@ def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
     
     TODO: Implement R6 as per requirements
     """
+    
     
     return []
 

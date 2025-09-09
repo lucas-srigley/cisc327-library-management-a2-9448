@@ -10,7 +10,7 @@ def test_get_all_books_valid_input():
         ("To Kill a Mockingbird", "Harper Lee", "9780061120084", 2),
         ("1984", "George Orwell", "9780451524935", 1),
         ("Test Book", "Test Author", "1234567890123", 5),
-        ("Req 1 Test Book", "Test Author", "1234567890124", 5)
+        ("Req 1 Test Book", "Test Author", "1234567890124", 1)
     ]
     assert len(valid_input) == len(get_all_books())
     for title, author, isbn, total_copies in valid_input:

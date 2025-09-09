@@ -5,7 +5,7 @@ from library_service import (
 
 def test_add_book_valid_input():
     """Test adding a book with valid input."""
-    success, message = add_book_to_catalog("Req 1 Test Book", "Test Author", "1234567890124", 5)
+    success, message = add_book_to_catalog("Req 1 Test Book", "Test Author", "1234567890124", 1)
     assert success == True
     assert "successfully added" in message.lower()
 
@@ -50,7 +50,6 @@ def test_add_book_invalid_isbn_too_long():
     assert success == False
     assert "ISBN must be exactly 13 digits." in message
     
-    # added this requirement
 def test_add_book_invalid_isbn_not_an_integer():
     """Test adding a book with ISBN that isn't an integer."""
     success, message = add_book_to_catalog("Test Book", "Test Author", "a234567890123", 5)
