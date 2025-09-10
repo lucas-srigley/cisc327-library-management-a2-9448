@@ -2,15 +2,22 @@ import pytest
 from library_service import (
     get_all_books
 )
+from database import (
+    reset_db
+)
+
+@pytest.fixture(scope="module", autouse=True)
+def reset_database():
+    """Reset database after all tests in this module run."""
+    yield
+    reset_db()
 
 def test_get_all_books_valid_input():
     """Test getting all books with valid input."""
     valid_input = [
         ("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 3),
         ("To Kill a Mockingbird", "Harper Lee", "9780061120084", 2),
-        ("1984", "George Orwell", "9780451524935", 1),
-        ("Test Book", "Test Author", "1234567890123", 5),
-        ("Req 1 Test Book", "Test Author", "1234567890124", 1)
+        ("1984", "George Orwell", "9780451524935", 1)
     ]
     assert len(valid_input) == len(get_all_books())
     for title, author, isbn, total_copies in valid_input:

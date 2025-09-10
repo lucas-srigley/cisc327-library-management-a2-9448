@@ -2,6 +2,15 @@ import pytest
 from library_service import (
     add_book_to_catalog
 )
+from database import (
+    reset_db
+)
+
+@pytest.fixture(scope="module", autouse=True)
+def reset_database():
+    """Reset database after all tests in this module run."""
+    yield
+    reset_db()
 
 def test_add_book_valid_input():
     """Test adding a book with valid input."""
@@ -9,7 +18,6 @@ def test_add_book_valid_input():
     assert success == True
     assert "successfully added" in message.lower()
 
-# title tests
 def test_add_book_invalid_title_empty():
     """Test adding a book with an empty title."""
     success, message = add_book_to_catalog("", "Test Author", "1234567890123", 5)
@@ -23,7 +31,6 @@ def test_add_book_invalid_title_too_long():
     assert success == False
     assert "Title must be less than 200 characters." in message
 
-# author tests
 def test_add_book_invalid_author_empty():
     """Test adding a book with an empty author."""
     success, message = add_book_to_catalog("Test Title", "", "1234567890123", 5)
@@ -37,7 +44,6 @@ def test_add_book_invalid_title_too_long():
     assert success == False
     assert "Author must be less than 100 characters." in message
 
-# isbn tests
 def test_add_book_invalid_isbn_too_short():
     """Test adding a book with ISBN too short."""
     success, message = add_book_to_catalog("Test Book", "Test Author", "123456789", 5)
@@ -62,7 +68,6 @@ def test_add_book_invalid_isbn_already_exists():
     assert success == False
     assert "A book with this ISBN already exists." in message
 
-# total copies tests
 def test_add_book_invalid_total_copies_zero():
     """Test adding a book with total copies = 0."""
     success, message = add_book_to_catalog("Test Book", "Test Author", "1234567890123", 0)

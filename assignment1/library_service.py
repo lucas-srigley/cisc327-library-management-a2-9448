@@ -111,6 +111,13 @@ def return_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
     
     TODO: Implement R4 as per requirements
     """
+    if not patron_id or not patron_id.isdigit() or len(patron_id) != 6:
+        return False, "Invalid patron ID. Must be exactly 6 digits."
+    
+    book = get_book_by_id(book_id)
+    if not book:
+        return False, "Book not found."
+    
     return False, "Book return functionality is not yet implemented."
 
 def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
@@ -119,6 +126,12 @@ def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     
     TODO: Implement R5 as per requirements 
     """
+    if not patron_id or not patron_id.isdigit() or len(patron_id) != 6:
+        return False, "Invalid patron ID. Must be exactly 6 digits."
+    
+    book = get_book_by_id(book_id)
+    if not book:
+        return False, "Book not found."
     return {
         'fee_amount': 0.00,
         'days_overdue': 0,
@@ -131,6 +144,12 @@ def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
     
     TODO: Implement R6 as per requirements
     """
+    if not search_term:
+        return False, "Search term not found."
+    if not search_type:
+        return False, "Search type not found."
+    if search_type not in {"title", "author", "isbn"}:
+        return False, "Invalid search type."
     return []
 
 def get_patron_status_report(patron_id: str) -> Dict:
@@ -139,4 +158,6 @@ def get_patron_status_report(patron_id: str) -> Dict:
     
     TODO: Implement R7 as per requirements
     """
+    if not patron_id or not patron_id.isdigit() or len(patron_id) != 6:
+        return False, "Invalid patron ID. Must be exactly 6 digits."
     return {}
