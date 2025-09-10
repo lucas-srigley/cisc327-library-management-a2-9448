@@ -10,6 +10,6 @@ Lucas Srigley\
 | get_all_books             |         Complete              |              |
 | borrow_book_by_patron             |      Complete                 |          |
 | return_book_by_patron             |      Complete                 |               |
-| calculate_late_fee_for_book       |                      |              |
-| search_books_in_catalog           |                       |              |
+| calculate_late_fee_for_book       |   Complete                   |              |
+| search_books_in_catalog           |  Complete                     |              |
 | get_patron_status_report          |                       |   

@@ -200,9 +200,15 @@ def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
     
     TODO: Implement R6 as per requirements
     """
-    
-    
-    return []
+    results = []
+    for book in get_all_books():
+        if search_type == "title" and search_term in book["title"].lower():
+            results.append(book)
+        elif search_type == "author" and search_term in book["author"].lower():
+            results.append(book)
+        elif search_type == "isbn" and search_term == book["isbn"]:
+            results.append(book)     
+    return results
 
 def get_patron_status_report(patron_id: str) -> Dict:
     """
