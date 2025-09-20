@@ -19,18 +19,17 @@ def test_search_books_valid_input():
 def test_search_books_invalid_empty_term():
     """Test searching for books with empty search term."""
     success, message = search_books_in_catalog("", "title")
-    success == False
+    assert success == False
     assert "Search term not found." in message 
 
 def test_search_books_invalid_empty_type():
     """Test searching for books with empty search type."""
     success, message = search_books_in_catalog("1984", "")
-    success == False
+    assert success == False
     assert "Search type not found." in message 
     
 def test_search_books_invalid_type():
     """Test searching for books with invalid search type."""
     success, message = search_books_in_catalog("9780451524935", "isbns")
-    success == False
+    assert success == False
     assert "Invalid search type." in message 
-
