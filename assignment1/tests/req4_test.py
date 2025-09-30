@@ -13,13 +13,13 @@ def reset_database():
     reset_db()
 
 # borrow a book so it can be returned
-borrow_book_by_patron("123456", get_book_by_isbn("9780451524935")["id"])
 
 def test_return_book_valid_input():
     """Test returning a book with valid input."""
+    borrow_book_by_patron("123456", get_book_by_isbn("9780451524935")["id"])
     success, message = return_book_by_patron("123456", get_book_by_isbn("9780451524935")["id"])
-    assert success == False
-    assert "Book return functionality is not yet implemented." in message
+    assert success == True
+    assert "Successfully returned" in message
 
 def test_return_book_invalid_patron_id_empty():
     """Test returning a book with empty patron id."""
