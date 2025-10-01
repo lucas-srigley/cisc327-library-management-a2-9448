@@ -9,6 +9,7 @@ from database import (
 @pytest.fixture(autouse=True)
 def reset_database():
     """Reset database after all tests in this module run."""
+    yield
     reset_db()
 
 import pytest

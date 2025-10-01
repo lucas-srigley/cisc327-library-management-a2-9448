@@ -10,6 +10,7 @@ from database import (
 @pytest.fixture(autouse=True)
 def reset_database():
     """Reset database after all tests in this module run."""
+    yield
     reset_db()
 
 def test_calculate_late_fee_for_book_not_overdue():

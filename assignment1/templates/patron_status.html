@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Patron Status</h2>
+
+<form method="POST" style="margin-bottom: 20px;">
+    <input type="text" name="patron_id" placeholder="Enter Patron ID (6 digits)" 
+           pattern="[0-9]{6}" maxlength="6" required style="width: 150px;">
+    <button type="submit" class="btn btn-primary">Check Status</button>
+</form>
+
+{% if report %}
+<h3>Patron ID: {{ report.patron_id }}</h3>
+<p>Total books currently borrowed: {{ report.num_books_borrowed }}</p>
+<p>Borrowing limit remaining: {{ report.borrowing_limit_remaining }}</p>
+<p>Total late fees owed: ${{ '%.2f' | format(report.total_late_fees) }}</p>
+
+<h4>Currently Borrowed Books</h4>
+{% if report.currently_borrowed %}
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Borrow Date</th>
+            <th>Due Date</th>
+            <th>Days Overdue</th>
+            <th>Late Fee</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in report.currently_borrowed %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.borrow_date }}</td>
+            <td>{{ book.due_date }}</td>
+            <td>{{ book.days_overdue }}</td>
+            <td>${{ '%.2f' | format(book.late_fee) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No books currently borrowed.</p>
+{% endif %}
+
+<h4>Borrowing History</h4>
+{% if report.borrowing_history %}
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Borrow Date</th>
+            <th>Due Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+            <th>Days Late</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in report.borrowing_history %}
+        <tr>
+            <td>{{ record.title }}</td>
+            <td>{{ record.author }}</td>
+            <td>{{ record.borrow_date }}</td>
+            <td>{{ record.due_date }}</td>
+            <td>{{ record.return_date }}</td>
+            <td>{{ record.status }}</td>
+            <td>{{ record.days_late }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No borrowing history found.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Tuple
 from database import (
     get_book_by_id, get_book_by_isbn, get_patron_borrow_count,
     insert_book, insert_borrow_record, update_book_availability,
-    update_borrow_record_return_date, get_all_books, get_patron_borrowed_books
+    update_borrow_record_return_date, get_all_books, get_patron_borrowed_books, get_patron_borrowing_history
 )
 
 def add_book_to_catalog(title: str, author: str, isbn: str, total_copies: int) -> Tuple[bool, str]:
@@ -215,5 +215,63 @@ def get_patron_status_report(patron_id: str) -> Dict:
     Get status report for a patron.
     
     TODO: Implement R7 as per requirements
-    """
-    return {}
+    """    
+    if not patron_id or not patron_id.isdigit() or len(patron_id) != 6:
+        return {
+            'success': False,
+            'message': "Invalid patron ID. Must be exactly 6 digits."
+        }
+    
+    borrowed_books = get_patron_borrowed_books(patron_id)
+    
+    total_late_fees = 0.00
+    formatted_books = []
+    for book in borrowed_books:
+        late_fee_info = calculate_late_fee_for_book(patron_id, book['book_id'])
+        total_late_fees += late_fee_info.get('fee_amount', 0.00)
+        
+        formatted_books.append({
+            'book_id': book['book_id'],
+            'title': book['title'],
+            'author': book['author'],
+            'borrow_date': book['borrow_date'].strftime("%Y-%m-%d"),
+            'due_date': book['due_date'].strftime("%Y-%m-%d"),
+            'is_overdue': book['is_overdue'],
+            'days_overdue': (datetime.now() - book['due_date']).days if book['is_overdue'] else 0,
+            'late_fee': late_fee_info.get('fee_amount', 0.00)
+        })
+    
+    history = get_patron_borrowing_history(patron_id)
+    
+    borrowing_history = []
+    for record in history:
+        return_date = record['return_date']
+        due_date = record['due_date']
+        
+        history_item = {
+            'book_id': record['book_id'],
+            'title': record['title'],
+            'author': record['author'],
+            'borrow_date': record['borrow_date'].strftime("%Y-%m-%d"),
+            'due_date': due_date.strftime("%Y-%m-%d"),
+            'return_date': return_date.strftime("%Y-%m-%d") if return_date else "Currently Borrowed",
+            'status': 'Returned' if return_date else 'Currently Borrowed',
+            'was_overdue': False,
+            'days_late': 0
+        }
+        
+        if return_date and return_date > due_date:
+            history_item['was_overdue'] = True
+            history_item['days_late'] = (return_date - due_date).days
+            
+        borrowing_history.append(history_item)
+    
+    return {
+        'success': True,
+        'patron_id': patron_id,
+        'currently_borrowed': formatted_books,
+        'num_books_borrowed': len(borrowed_books),
+        'total_late_fees': round(total_late_fees, 2),
+        'borrowing_limit_remaining': max(0, 5 - len(borrowed_books)),
+        'borrowing_history': borrowing_history
+    }
