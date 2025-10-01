@@ -12,8 +12,6 @@ def reset_database():
     yield
     reset_db()
 
-# borrow a book so it can be returned
-
 def test_return_book_valid_input():
     """Test returning a book with valid input."""
     borrow_book_by_patron("123456", get_book_by_isbn("9780451524935")["id"])
