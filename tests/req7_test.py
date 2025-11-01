@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timedelta
-from library_service import (
+from services.library_service import (
     get_patron_status_report, borrow_book_by_patron, get_book_by_isbn
 )
 from database import (

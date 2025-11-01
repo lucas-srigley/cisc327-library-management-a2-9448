@@ -1,5 +1,5 @@
 import pytest
-from library_service import (
+from services.library_service import (
     search_books_in_catalog
 )
 from database import (
@@ -13,7 +13,7 @@ def reset_database():
     reset_db()
 
 import pytest
-from library_service import (
+from services.library_service import (
     search_books_in_catalog
 )
 

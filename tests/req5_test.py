@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import pytest
-from library_service import (
+from services.library_service import (
     calculate_late_fee_for_book, get_book_by_isbn, insert_borrow_record, insert_book
 )
 from database import (

@@ -1,5 +1,5 @@
 import pytest
-from library_service import (
+from services.library_service import (
     return_book_by_patron, get_book_by_isbn, borrow_book_by_patron
 )
 from database import (
