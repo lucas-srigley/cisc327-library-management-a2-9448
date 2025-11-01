@@ -64,7 +64,7 @@ def test_add_book_invalid_isbn_not_an_integer():
 
 def test_add_book_invalid_isbn_already_exists():
     """Test adding a book with ISBN that already exists."""
-    success, message = add_book_to_catalog("Test Book", "Test Author", "1234567890123", 5)
+    success, message = add_book_to_catalog("Test Book", "Test Author", "1234567890124", 5)
     assert success == False
     assert "A book with this ISBN already exists." in message
 
