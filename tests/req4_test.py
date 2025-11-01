@@ -42,3 +42,17 @@ def test_return_book_invalid_book_id():
     success, message = return_book_by_patron("123456", 123456)
     assert success == False
     assert "Book not found." in message
+    
+def test_return_book_not_borrowed():
+    """Test returning a book that was not borrowed by the patron."""
+    success, message = return_book_by_patron("123456", get_book_by_isbn("9780743273565")["id"])
+    assert success == False
+    assert "Book has not been borrowed by this patron." in message
+    
+def test_return_book_borrow_record_failure(mocker):
+    """Test database error when updating borrow record."""
+    borrow_book_by_patron("123456", get_book_by_isbn("9780451524935")["id"])
+    mocker.patch('services.library_service.update_borrow_record_return_date', return_value=False)
+    success, message = return_book_by_patron("123456", get_book_by_isbn("9780451524935")["id"])
+    assert success == False
+    assert "Database error occurred while creating borrow record." in message
