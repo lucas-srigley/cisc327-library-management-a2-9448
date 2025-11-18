@@ -29,9 +29,12 @@ jobs:
           playwright install
 
       - name: Start server
-        run: python app.py &
-        env:
-          FLASK_ENV: testing
+        shell: python
+        run: |
+          import subprocess, time
+      
+          proc = subprocess.Popen(["python", "app.py"], env={"FLASK_ENV": "testing"})
+          time.sleep(1)
   
       - name: Wait for server
         shell: python
