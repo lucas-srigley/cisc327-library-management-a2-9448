@@ -28,6 +28,9 @@ jobs:
           pip install -r requirements.txt
           playwright install
 
+      - name: Start server
+        run: python app.py
+
       - name: Run tests
         run: pytest --cov --cov-branch --cov-report=xml
 
