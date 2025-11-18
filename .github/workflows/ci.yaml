@@ -34,19 +34,18 @@ jobs:
           FLASK_ENV: testing
   
       - name: Wait for server
+        shell: python
         run: |
-          python - << 'EOF'
-          import time, socket
+          import time, socket, sys
           for _ in range(30):
               try:
                   socket.create_connection(("localhost", 5000), timeout=1)
                   print("Server ready")
-                  break
+                  sys.exit(0)
               except OSError:
                   time.sleep(1)
-          else:
-              raise SystemExit("Server failed to start in time")
-          EOF
+          print("Server failed to start in time")
+          sys.exit(1)
 
       - name: Run tests
         run: pytest --cov --cov-branch --cov-report=xml
