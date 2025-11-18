@@ -121,8 +121,8 @@ def return_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
     
     borrowed_books = get_patron_borrowed_books(patron_id)
     book_borrowed = False
-    for book in borrowed_books:
-        if book["book_id"] == book_id:
+    for borrowed in borrowed_books:
+        if borrowed["book_id"] == book_id:
             book_borrowed = True
             break
     if not book_borrowed:
