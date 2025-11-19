@@ -29,13 +29,16 @@ jobs:
           playwright install
 
       - name: Start server
-        run: |
-          if ($env:RUNNER_OS -eq "Windows") {
-            Start-Process python app.py
-          } else {
-            python app.py &
-          }
+        if: runner.os == 'Windows'
         shell: pwsh
+        run: Start-Process python app.py
+        env:
+          FLASK_ENV: testing
+        
+      - name: Start server
+        if: runner.os != 'Windows'
+        shell: bash
+        run: python app.py &
         env:
           FLASK_ENV: testing
         
