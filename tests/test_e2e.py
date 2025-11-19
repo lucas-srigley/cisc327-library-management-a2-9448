@@ -47,7 +47,6 @@ def page(playwright):
     context.close()
     browser.close()
 
-
 def test_add_book_and_verify_in_catalog(page: Page):
     page.goto(f"{BASE_URL}/add_book")
     expect(page).to_have_title("Library Management System")
@@ -77,7 +76,6 @@ def test_add_book_and_verify_in_catalog(page: Page):
     expect(book_row).to_contain_text(test_author)
     expect(book_row).to_contain_text(test_isbn)
     expect(book_row).to_contain_text(f"{test_copies}/{test_copies} Available")
-
 
 def test_borrow_book_flow(page: Page):
     page.goto(f"{BASE_URL}/catalog")
@@ -125,7 +123,6 @@ def test_search_book_functionality(page: Page):
     expect(results_table).to_contain_text("1984")
     expect(results_table).to_contain_text("George Orwell")
 
-
 def test_return_book_flow(page: Page):
     page.goto(f"{BASE_URL}/catalog")
     
@@ -149,7 +146,6 @@ def test_return_book_flow(page: Page):
     expect(flash_message).to_be_visible()
     expect(flash_message).to_contain_text("Successfully returned")
 
-
 def test_patron_status_flow(page: Page):
     page.goto(f"{BASE_URL}/patron_status")
     expect(page.locator("h2")).to_contain_text("Patron Status")
@@ -165,7 +161,6 @@ def test_patron_status_flow(page: Page):
     expect(page.locator("p:has-text('Borrowing limit remaining')")).to_be_visible()
     expect(page.locator("p:has-text('Total late fees owed')")).to_be_visible()
 
-
 def test_invalid_isbn_validation(page: Page):
     page.goto(f"{BASE_URL}/add_book")
     
@@ -178,7 +173,6 @@ def test_invalid_isbn_validation(page: Page):
     
     expect(page.locator(".flash-error")).to_be_visible()
     expect(page.locator(".flash-error")).to_contain_text("13 digits")
-
 
 def test_navigation_links(page: Page):
     page.goto(f"{BASE_URL}/catalog")
